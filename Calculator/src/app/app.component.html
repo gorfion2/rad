@@ -1,0 +1,159 @@
+<div class="container">
+  <form class="form">
+    <div class="form-inline form-group">
+      <input class="form-control" required step="0.000000001" [(ngModel)]="argument1" (keypress)="clear()" type="number" class="form-control"
+        placeholder="Liczba" name="number" style="width: 70%">E
+      <input class="form-control" required step="1" [(ngModel)]="pow1" (keypress)="clear()" type="number" class="form-control"
+        placeholder="Potęga" name="number" style="width: 26%">
+    </div>
+    <div class="form-group">
+      <input class="form-control" required min="-10" max="10" [(ngModel)]="base1" (keypress)="clear()" type="number" class="form-control"
+        placeholder="Podstawa w nowym systemie" name="base">
+    </div>
+    <div class="form-group">
+      <button [disabled]="!argument1 ||pow1===null|| !base1" class="btn btn-default" (click)="convertToNewSystem()" type="submit">
+        Konwertuj do nowego systemu
+      </button>
+
+      <button [disabled]="!argument1||pow1===null || !base1 || !checkSystem(argument1,base1)" class="btn btn-default" (click)="convertToDecimalSystem()"
+        type="submit">
+        Konwertuj do systemu dziesiętnego
+      </button>
+
+    </div>
+
+    <div class="form-group form-inline">
+      <input class="form-control" required step="0.000000001" [(ngModel)]="argument2" (keypress)="clear()" type="number" class="form-control"
+        placeholder="Druga liczba" name="number" style="width: 70%"> E
+      <input class="form-control" required step="1" [(ngModel)]="pow2" (keypress)="clear()" type="number" class="form-control"
+        placeholder="Potęga" name="number" style="width: 26%">
+    </div>
+    <div class="form-group">
+      <input class="form-control" required min="1" max="10" [(ngModel)]="base2" (keypress)="clear()" type="number" class="form-control"
+        placeholder="Podstawa w nowym systemie" name="base">
+    </div>
+
+    <div class="form-group">
+      <button [disabled]="!argument1||pow1===null || !base1 || !checkSystem(argument1,base1) || !argument2 ||pow2===null|| !base2 || !checkSystem(argument2,base2)"
+        class="btn btn-default" (click)="add()" type="submit">
+        Dodawanie
+      </button>
+
+      <button [disabled]="!argument1 ||pow1===null|| !base1 || !checkSystem(argument1,base1) || !argument2||pow2===null || !base2 || !checkSystem(argument2,base2)"
+        class="btn btn-default" (click)="substract()" type="submit">
+        Odejmowanie
+      </button>
+
+      <button [disabled]="!argument1 ||pow1===null|| !base1 || !checkSystem(argument1,base1) || !argument2||pow2===null || !base2 || !checkSystem(argument2,base2)"
+        class="btn btn-default" (click)="multiply()" type="submit">
+        Mnożenie
+      </button>
+
+      <button [disabled]="!argument1||pow1===null || !base1 || !checkSystem(argument1,base1) || !argument2||pow2===null || !base2 || !checkSystem(argument2,base2)"
+        class="btn btn-default" (click)="divide()" type="submit">
+        Dzielenie
+      </button>
+
+    </div>
+  </form>
+</div>
+
+
+<div *ngIf="converter.totalNewSystem || converter.fractialNewSystem" id="larg-container" class="container">
+  <div id="total-panel" class="panel panel-default">
+    <div class="panel-body">
+      <table>
+        <tr *ngFor="let divideModel of converter.divideModels">
+          <td>{{divideModel.dividend}}</td>
+          <td>/</td>
+          <td>{{base1}}</td>
+          <td>=</td>
+          <td>{{divideModel.result}}</td>
+          <td>reszta:</td>
+          <td>{{divideModel.rest}}</td>
+        </tr>
+      </table>
+
+      Wynik: {{converter.totalNewSystem}}
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <table>
+        <tr *ngFor="let multiplyModel of converter.multiplyModels">
+          <td>{{multiplyModel.multiplicand}}</td>
+          <td>*</td>
+          <td>{{base1}}</td>
+          <td>=</td>
+          <td>{{multiplyModel.result}}</td>
+          <td>wynik:</td>
+          <td>{{multiplyModel.fraction}}</td>
+        </tr>
+      </table>
+
+      Wynik: {{converter.fractialNewSystem}}
+    </div>
+  </div>
+  <div class="panel panel-default larg">
+    <div class="panel-body center-text">
+      {{converter.normalizeBack(argument1, 10, pow1)}} w systemie {{base1}} to {{convertResult}}
+      <br> Po normalizacji: {{converter.normalize(convertResult)}}
+    </div>
+  </div>
+
+</div>
+
+<div *ngIf="converter.totalSum || converter.fractialSum" id="larg-container" class="container">
+  <div id="total-panel" class="panel panel-default">
+    <div class="panel-body">
+      <table>
+        <tr *ngFor="let multiplyModel of converter.multiplyModelsTotal">
+          <td>{{multiplyModel.multiplicand}}</td>
+          <td>*</td>
+          <td>{{base1}}<sup>{{multiplyModel.pow}}</sup></td>
+          <td>=</td>
+          <td>{{multiplyModel.result}}</td>
+        </tr>
+      </table>
+
+      Wynik: {{converter.totalSum}}
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <table>
+        <tr *ngFor="let multiplyModel of converter.multiplyModelsFractial">
+          <td>{{multiplyModel.multiplicand}}</td>
+          <td>*</td>
+          <td>{{base1}}<sup>{{multiplyModel.pow}}</sup></td>
+          <td>=</td>
+          <td>{{multiplyModel.result}}</td>
+        </tr>
+      </table>
+
+      Wynik: {{converter.fractialSum}}
+    </div>
+  </div>
+  <div class="panel panel-default larg">
+    <div class="panel-body center-text">
+      {{argument1}} w systemie 10 to {{converter.totalSum+converter.fractialSum}}
+      <br> Po normalizacji: {{converter.normalize(converter.totalSum+converter.fractialSum)}}
+    </div>
+  </div>
+
+</div>
+
+
+<div *ngIf="equationResult && equationResultBase1 && equationResultBase2" id="larg-container" class="container">
+  <div class="panel panel-default larg">
+    <div class="panel-body center-text">
+      {{converter.normalizeBack(argument1, base1, pow1)}} w systemie {{base1}} {{sign()}} {{converter.normalizeBack(argument2,
+      base2, pow2)}} w systemie {{base2}} to: <br> {{converter.normalize(equationResult)}} w systemie 10
+      <br> {{converter.normalize(equationResultBase1)}} w systemie {{base1}}
+      <br> {{converter.normalize(equationResultBase2)}} w systemie {{base2}}
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,44 @@
+.container {
+    width: 500px;
+    margin-top: 20px;
+}
+
+#larg-container{
+    width: 1000px;
+}
+
+#total-panel{
+    margin-left: 25px;
+}
+
+.center-text{
+    text-align: center;
+}
+
+.panel{
+    width: 450px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+}
+
+td{
+    padding: 3px;
+}
+
+.larg{
+    width: 1000px;
+}
+
+input:invalid { 
+    border: 2px solid red;
+}
+
+.big-input{
+    width: 70%;
+}
+
+.small-input{
+    width: 20%;
+}
